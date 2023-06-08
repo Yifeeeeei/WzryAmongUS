@@ -3,6 +3,16 @@ import joblib
 import random
 import json
 
+from flask_apscheduler import APScheduler
+import time
+
+try:
+    hero_data = joblib.load("hero_data.pkl")
+except:
+    import parse_all_heros
+
+    hero_data = joblib.load("hero_data.pkl")
+
 
 class Player:
     def __init__(self, number):
@@ -14,15 +24,20 @@ class Player:
 
 class Game:
     def __init__(self, game_number):
+        self.last_operate_time = time.time()
         self.game_number = game_number
-        self.all_heros = joblib.load("names.pkl")
+        # self.all_heros = joblib.load("names.pkl")
         self.player_list = []
         self.ready = False
-        self.all_roads = ["top", "mid", "bot", "jug", "sup"]
-        self.all_identities = ["man", "man", "man", "man", "ghost"]
+        self.all_roads = ["上路", "中路", "下路", "打野", "游走"]
+        self.all_identities = ["良民", "良民", "良民", "良民", "卧底"]
         self.mapping = dict()
 
+    def update_time(self):
+        self.last_operate_time = time.time()
+
     def add_player(self):
+        self.update_time()
         if len(self.player_list) == 5:
             return -1
         player_number = random.randint(0, 10000)
@@ -34,16 +49,22 @@ class Game:
         return player_number
 
     def draw(self):
+        self.update_time()
         if len(self.player_list) != 5:
             self.ready = False
         else:
             random.shuffle(self.all_roads)
-            tmp_heros = random.sample(self.all_heros, 5)
             random.shuffle(self.all_identities)
+            chosen_heros = []
             for i in range(5):
-                self.player_list[i].hero = tmp_heros[i]
                 self.player_list[i].road = self.all_roads[i]
                 self.player_list[i].identity = self.all_identities[i]
+                random_hero = random.sample(hero_data[self.all_roads[i]], 1)[0]
+                while random_hero in chosen_heros:
+                    random_hero = random.sample(hero_data[self.all_roads[i]], 1)[0]
+                chosen_heros.append(random_hero)
+                self.player_list[i].hero = random_hero
+
             self.ready = True
 
     def get_player(self, player_number):
@@ -52,7 +73,10 @@ class Game:
 
 
 app = Flask(__name__)
+app.config["SCHEDULER_API_ENABLED"] = True
 
+scheduler = APScheduler()
+scheduler.init_app(app)
 game_list = []
 
 
@@ -117,7 +141,12 @@ def draw():
         if game_list[i].game_number == game_number:
             real_game_number = i
             break
+    if real_game_number == -1:
+        return_dict["status"] = "failed"
+
     if len(game_list[real_game_number].player_list) != 5:
+        return_dict["status"] = "success"
+        return_dict["people_in_game"] = len(game_list[real_game_number].player_list)
         return json.dumps(return_dict)
     game_list[real_game_number].draw()
 
@@ -149,11 +178,25 @@ def show():
         if game_list[i].game_number == game_number:
             real_game_number = i
             break
+    if real_game_number == -1:
+        return_dic = {
+            "status": "failed",
+            # "identity": game_list[real_game_number].get_player(player_number).identity,
+            # "players": [],
+            # "people_in_game": len(game_list[real_game_number].player_list),
+        }
+        return return_dic
 
     return_dic = {
+        "status": "success",
         "identity": game_list[real_game_number].get_player(player_number).identity,
         "players": [],
+        "people_in_game": len(game_list[real_game_number].player_list),
     }
+    if return_dic["people_in_game"] != 5:
+        return json.dumps(return_dic)
+
+    game_list[real_game_number].update_time()
 
     for player in game_list[real_game_number].player_list:
         return_dic["players"].append(
@@ -162,4 +205,26 @@ def show():
     return json.dumps(return_dic)
 
 
+def maintain_game_list():
+    print("maintain")
+    games_to_be_deleted = []
+    for i in range(len(game_list)):
+        if time.time() - game_list[i].last_operate_time > 60 * 30:
+            games_to_be_deleted.append(i)
+    games_to_be_deleted.reverse()
+    for i in games_to_be_deleted:
+        print("deleting")
+        game_list.pop(i)
+
+
+@scheduler.task("cron", id="maintain", minute=59)
+def cron_maintain():
+    print("croning")
+    maintain_game_list()
+
+
+scheduler.start()
+
 app.run(host="0.0.0.0", port=80, debug=True)
+# scheduler = BlockingScheduler()
+# scheduler.add_job(maintain_game_list, "interval", seconds=1)

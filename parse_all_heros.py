@@ -1,47 +1,198 @@
-# import ssl
-
-# ssl._create_default_https_context = ssl._create_unverified_context
-# import urllib.request
-# import time
-
-
-# # parse all heros name from url="https://pvp.qq.com/web201605/herolist.shtml", the selector is body > div.wrapper > div > div > div.herolist-box > div.herolist-content > ul > li > a
-# def get_hero_names():
-#     url = "https://pvp.qq.com/web201605/herolist.shtml"
-
-#     headers = {
-#         "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
-#     }
-
-#     enhanced_url = urllib.request.Request(url=url, headers=headers)
-#     response = urllib.request.urlopen(enhanced_url)
-#     time.sleep(5)
-#     html = response.read().decode("gbk")
-#     print(html)
-#     from bs4 import BeautifulSoup
-
-#     soup = BeautifulSoup(html, "html.parser")
-#     heros = soup.select(
-#         "body > div.wrapper > div > div > div.herolist-box > div.herolist-content > ul > li > a"
-#     )
-#     h = soup.select(
-#         "body > div.wrapper > div > div > div.herolist-box > div.herolist-content > ul > li:nth-child(1) > a"
-#     )
-#     print(h[0].get_text())
-#     hero_names = []
-#     for hero in heros:
-#         hero_names.append(hero.get_text())
-#     return hero_names
-
-
-# herolist = get_hero_names()
-
-# print(herolist, len(herolist))
 import joblib
 
-names = []
-with open("names.txt", "r") as f:
-    for line in f.readlines():
-        names.append(line.split(" ")[1])
-joblib.dump(names, "names.pkl")
-print(len(names))
+tanks = [
+    "阿古朵",
+    "蒙恬",
+    "猪八戒",
+    "嫦娥",
+    "盾山",
+    "孙策",
+    "梦奇",
+    "苏烈",
+    "铠",
+    "东皇太一",
+    "太乙真人",
+    "张飞",
+    "牛魔",
+    "亚瑟",
+    "刘邦",
+    "程咬金",
+    "项羽",
+    "达摩",
+    "夏侯惇",
+    "吕布",
+    "芈月",
+    "白起",
+    "钟无艳",
+    "刘禅",
+    "庄周",
+    "廉颇",
+]
+assassins = [
+    "暃",
+    "云缨",
+    "澜",
+    "镜",
+    "马超",
+    "云中君",
+    "上官婉儿",
+    "司马懿",
+    "元歌",
+    "裴擒虎",
+    "百里玄策",
+    "百里守约",
+    "孙悟空",
+    "橘右京",
+    "娜可露露",
+    "不知火舞",
+    "花木兰",
+    "兰陵王",
+    "韩信",
+    "貂蝉",
+    "李白",
+    "阿轲",
+    "赵云",
+]
+mages = [
+    "海月",
+    "金蝉",
+    "司空震",
+    "西施",
+    "嫦娥",
+    "上官婉儿",
+    "沈梦溪",
+    "司马懿",
+    "米莱狄",
+    "弈星",
+    "杨玉环",
+    "女娲",
+    "干将莫邪",
+    "诸葛亮",
+    "钟馗",
+    "不知火舞",
+    "张良",
+    "王昭君",
+    "姜子牙",
+    "露娜",
+    "安琪拉",
+    "貂蝉",
+    "武则天",
+    "甄姬",
+    "周瑜",
+    "芈月",
+    "扁鹊",
+    "孙膑",
+    "高渐离",
+    "嬴政",
+    "妲己",
+    "墨子",
+    "小乔",
+]
+marksmen = [
+    "莱西奥",
+    "戈娅",
+    "艾琳",
+    "蒙犽",
+    "伽罗",
+    "公孙离",
+    "百里守约",
+    "黄忠",
+    "成吉思汗",
+    "虞姬",
+    "李元芳",
+    "后羿",
+    "狄仁杰",
+    "马可波罗",
+    "鲁班七号",
+    "孙尚香",
+]
+support = [
+    "桑启",
+    "金蝉",
+    "鲁班大师",
+    "瑶",
+    "盾山",
+    "明世隐",
+    "苏烈",
+    "鬼谷子",
+    "东皇太一",
+    "大乔",
+    "太乙真人",
+    "蔡文姬",
+    "钟馗",
+    "张飞",
+    "牛魔",
+    "孙膑",
+    "刘禅",
+    "庄周",
+]
+warrirors = [
+    "姬小满",
+    "赵怀真",
+    "云缨",
+    "司空震",
+    "夏洛特",
+    "蒙恬",
+    "马超",
+    "曜",
+    "云中君",
+    "盘古",
+    "李信",
+    "孙策",
+    "狂铁",
+    "裴擒虎",
+    "梦奇",
+    "铠",
+    "哪吒",
+    "雅典娜",
+    "杨戬",
+    "刘备",
+    "孙悟空",
+    "亚瑟",
+    "橘右京",
+    "花木兰",
+    "露娜",
+    "程咬金",
+    "关羽",
+    "老夫子",
+    "达摩",
+    "宫本武藏",
+    "典韦",
+    "曹操",
+    "夏侯惇",
+    "吕布",
+    "钟无艳",
+    "墨子",
+    "赵云",
+]
+
+
+# "road"-set(names)
+hero_data = {"上路": set(), "中路": set(), "下路": set(), "打野": set(), "游走": set()}
+
+# 坦克可以是上单，辅助，打野
+for t in tanks:
+    hero_data["上路"].add(t)
+    hero_data["游走"].add(t)
+    hero_data["打野"].add(t)
+
+# 刺客可以是上单，打野
+for a in assassins:
+    hero_data["上路"].add(a)
+    hero_data["打野"].add(a)
+# 法师可以是中单
+for m in mages:
+    hero_data["中路"].add(m)
+# 射手只能是下路
+for ma in marksmen:
+    hero_data["下路"].add(ma)
+# 辅助只能是辅助
+for s in support:
+    hero_data["游走"].add(s)
+# 战士可以是打野，上单
+for w in warrirors:
+    hero_data["打野"].add(w)
+    hero_data["上路"].add(w)
+
+
+joblib.dump(hero_data, "hero_data.pkl")

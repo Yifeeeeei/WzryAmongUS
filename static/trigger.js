@@ -9,6 +9,9 @@
 // var base_url = "https://wzryamongus.yifeeeeei.repl.co/";
 console.log("trigger.js loaded");
 
+// var query = window.location.search.substring(1);
+var query_show;
+
 // var register = document.getElementById("register");
 // var draw = document.getElementById("draw");
 // var show = document.getElementById("show");
@@ -56,6 +59,7 @@ function register_game() {
             var obj = JSON.parse(json);
             if (obj["status"] == "success") {
                 player_number.innerText = obj["player_number"];
+                query_show = self.setInterval("show()", 1000);
             } else {
                 alert("room full");
             }
@@ -90,12 +94,12 @@ function draw() {
     /**
      * 获取数据后的处理程序
      */
-    httpRequest.onreadystatechange = function () {
-        if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-            // var json = httpRequest.responseText;//获取到json字符串，还需解析
-            show();
-        }
-    };
+    // httpRequest.onreadystatechange = function () {
+    //     if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+    //         // var json = httpRequest.responseText;//获取到json字符串，还需解析
+    //         show();
+    //     }
+    // };
 }
 function show() {
     var game_number = document.getElementById("game_number");
@@ -105,6 +109,7 @@ function show() {
     var road = document.getElementById("road");
     var hero = document.getElementById("hero");
     var all_players = document.getElementsByClassName("all_players");
+    var people_in_game = document.getElementById("people_in_game");
 
     var base_url = "https://wzryamongus.yifeeeeei.repl.co/";
 
@@ -129,21 +134,46 @@ function show() {
             var json = httpRequest.responseText; //获取到json字符串，还需解析
             console.log(json);
             var obj = JSON.parse(json);
-            if (obj["identity"] == null) {
-                alert("not ready yet");
+
+            if (obj["status"] == "failed") {
+                self.clearInterval(query_show);
+                alert("room expired");
                 return;
             }
 
-            identity.innerHTML = obj["identity"];
+            if (obj["identity"] == null) {
+                // alert("not ready yet");
+                // return;
+            } else {
+                identity.innerHTML = obj["identity"];
+            }
 
-            for (var i = 0; i < obj["players"].length; i++) {
-                all_players[i].getElementsByClassName(
-                    "all_player_number"
-                )[0].innerText = obj["players"][i]["player_number"];
-                all_players[i].getElementsByClassName("all_hero")[0].innerText =
-                    obj["players"][i]["hero"];
-                all_players[i].getElementsByClassName("all_road")[0].innerText =
-                    obj["players"][i]["road"];
+            people_in_game.innerText =
+                obj["people_in_game"].toString() + " / 5";
+
+            if (obj["people_in_game"] == 5) {
+                for (var i = 0; i < obj["players"].length; i++) {
+                    all_players[i].getElementsByClassName(
+                        "all_player_number"
+                    )[0].innerText = obj["players"][i]["player_number"];
+                    if (
+                        obj["players"][i]["player_number"] == player_number_val
+                    ) {
+                        if (!all_players[i].classList.contains("chosen")) {
+                            all_players[i].classList.add("chosen");
+                        }
+                    } else {
+                        if (all_players[i].classList.contains("chosen")) {
+                            all_players[i].classList.remove("chosen");
+                        }
+                    }
+                    all_players[i].getElementsByClassName(
+                        "all_hero"
+                    )[0].innerText = obj["players"][i]["hero"];
+                    all_players[i].getElementsByClassName(
+                        "all_road"
+                    )[0].innerText = obj["players"][i]["road"];
+                }
             }
         }
     };
