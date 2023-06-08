@@ -153,9 +153,9 @@ function show() {
 
             if (obj["people_in_game"] == 5) {
                 for (var i = 0; i < obj["players"].length; i++) {
-                    all_players[i].getElementsByClassName(
-                        "all_player_number"
-                    )[0].innerText = obj["players"][i]["player_number"];
+                    // all_players[i].getElementsByClassName(
+                    //     "all_player_number"
+                    // )[0].innerText = obj["players"][i]["player_number"];
                     if (
                         obj["players"][i]["player_number"] == player_number_val
                     ) {

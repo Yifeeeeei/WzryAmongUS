@@ -30,7 +30,7 @@ class Game:
         self.player_list = []
         self.ready = False
         self.all_roads = ["上路", "中路", "下路", "打野", "游走"]
-        self.all_identities = ["良民", "良民", "良民", "良民", "卧底"]
+        self.all_identities = ["良民", "良民", "良民", "呆呆鸟", "卧底"]
         self.mapping = dict()
 
     def update_time(self):
@@ -199,9 +199,19 @@ def show():
     game_list[real_game_number].update_time()
 
     for player in game_list[real_game_number].player_list:
-        return_dic["players"].append(
-            {"player_number": player.number, "hero": player.hero, "road": player.road}
-        )
+        if player.number == player_number:
+            return_dic["players"].append(
+                {
+                    "player_number": player.number,
+                    "hero": player.hero,
+                    "road": player.road,
+                }
+            )
+        else:
+            return_dic["players"].append(
+                {"player_number": -1, "hero": player.hero, "road": player.road}
+            )
+
     return json.dumps(return_dic)
 
 
