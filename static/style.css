@@ -9,7 +9,11 @@
     box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
 }
 
+#top3 {
+    display: flex;
+}
 .input-wrapper input {
+    height: 3rem;
     background-color: #eee;
     border: none;
     padding: 1rem;
@@ -27,6 +31,7 @@
 }
 
 button {
+    height: 3rem;
     color: #090909;
     padding: 0.7em 1.7em;
     font-size: 1rem;
@@ -52,7 +57,7 @@ p {
     font-weight: 500;
     color: #000000;
     text-align: center;
-    margin: 0;
+    margin: 1rem;
     padding: 0;
 }
 
