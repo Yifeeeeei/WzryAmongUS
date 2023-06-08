@@ -81,6 +81,11 @@ function draw() {
     console.log("drawing");
     var game_number_val = parseInt(game_number.value);
     var player_number_val = parseInt(player_number.innerText);
+
+    if (isNaN(player_number_val)) {
+        alert("please register a valid game first");
+        return;
+    }
     var httpRequest = new XMLHttpRequest(); //第一步：建立所需的对象
     httpRequest.open(
         "GET",

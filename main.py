@@ -71,6 +71,8 @@ class Game:
 
     def get_player(self, player_number):
         print(self.mapping.keys())
+        if str(player_number) not in self.mapping.keys():
+            return None
         return self.player_list[self.mapping[str(player_number)]]
 
 
@@ -159,9 +161,13 @@ def draw():
         if game_list[i].game_number == game_number:
             real_game_number = i
             break
+    tmp_player = game_list[real_game_number].get_player(player_number)
+    if tmp_player is None:
+        return_dict["status"] = "failed"
+        return json.dumps(return_dict)
 
     return_dic = {
-        "identity": game_list[real_game_number].get_player(player_number).identity,
+        "identity": tmp_player.identity,
         "players": [],
     }
 
@@ -189,10 +195,15 @@ def show():
             # "people_in_game": len(game_list[real_game_number].player_list),
         }
         return return_dic
+    tmp_player = game_list[real_game_number].get_player(player_number)
+    return_dict = {}
+    if tmp_player is None:
+        return_dict["status"] = "failed"
+        return json.dumps(return_dict)
 
     return_dic = {
         "status": "success",
-        "identity": game_list[real_game_number].get_player(player_number).identity,
+        "identity": tmp_player.identity,
         "players": [],
         "people_in_game": len(game_list[real_game_number].player_list),
     }
