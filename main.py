@@ -6,12 +6,14 @@ import json
 from flask_apscheduler import APScheduler
 import time
 
-try:
-    hero_data = joblib.load("hero_data.pkl")
-except:
-    import parse_all_heros
+# try:
+#     hero_data = joblib.load("hero_data.pkl")
+# except:
+import parse_all_heros
 
-    hero_data = joblib.load("hero_data.pkl")
+hero_data = parse_all_heros.get_hero_data()
+
+# hero_data = joblib.load("hero_data.pkl")
 
 
 class Player:
@@ -143,10 +145,11 @@ def draw():
             break
     if real_game_number == -1:
         return_dict["status"] = "failed"
+        return json.dumps(return_dict)
 
     if len(game_list[real_game_number].player_list) != 5:
-        return_dict["status"] = "success"
-        return_dict["people_in_game"] = len(game_list[real_game_number].player_list)
+        return_dict["status"] = "missing_people"
+        # return_dict["people_in_game"] = len(game_list[real_game_number].player_list)
         return json.dumps(return_dict)
     game_list[real_game_number].draw()
 

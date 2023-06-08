@@ -94,12 +94,19 @@ function draw() {
     /**
      * 获取数据后的处理程序
      */
-    // httpRequest.onreadystatechange = function () {
-    //     if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-    //         // var json = httpRequest.responseText;//获取到json字符串，还需解析
-    //         show();
-    //     }
-    // };
+    httpRequest.onreadystatechange = function () {
+        if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+            var json = httpRequest.responseText; //获取到json字符串，还需解析
+            // console.log(json);
+            var obj = JSON.parse(json);
+            if (obj["status"] == "failed") {
+                alert("room expired");
+            } else if (obj["status"] == "missing_people") {
+                // console.log(obj["people_in_game"])
+                alert("not enough players");
+            }
+        }
+    };
 }
 function show() {
     var game_number = document.getElementById("game_number");
