@@ -55,7 +55,7 @@ function register_game() {
     httpRequest.onreadystatechange = function () {
         if (httpRequest.readyState == 4 && httpRequest.status == 200) {
             var json = httpRequest.responseText; //获取到json字符串，还需解析
-            console.log(json);
+            // console.log(json);
             var obj = JSON.parse(json);
             if (obj["status"] == "success") {
                 player_number.innerText = obj["player_number"];
@@ -132,7 +132,7 @@ function show() {
     httpRequest.onreadystatechange = function () {
         if (httpRequest.readyState == 4 && httpRequest.status == 200) {
             var json = httpRequest.responseText; //获取到json字符串，还需解析
-            console.log(json);
+            // console.log(json);
             var obj = JSON.parse(json);
 
             if (obj["status"] == "failed") {
