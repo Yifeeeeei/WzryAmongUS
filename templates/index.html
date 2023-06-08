@@ -1,11 +1,13 @@
 <html>
     <head>
         <link rel="stylesheet" href="../static/style.css" />
-        <script src="../static/trigger.js" type="text/javascript"></script>
     </head>
     <body>
-        <input id="game_number" />
-        <button id="register" onclick="register_game()">register_game</button>
+        <label class="input-wrapper">
+            <input id="game_number" />
+        </label>
+        <button id="register">register_game</button>
+        <button id="draw">draw</button>
         <p id="player_number"></p>
         <p id="identity"></p>
         <p id="road"></p>
@@ -14,7 +16,7 @@
         <p id="people_in_game"></p>
 
         <!-- show all player status -->
-        <button id="draw" onclick="draw()">draw</button>
+
         <!-- <button id="show" onclick="show()">show</button> -->
 
         <div class="all_players" id="player0">
@@ -42,5 +44,6 @@
             <p class="all_road"></p>
             <p class="all_hero"></p>
         </div>
+        <script src="../static/trigger.js" type="text/javascript"></script>
     </body>
 </html>

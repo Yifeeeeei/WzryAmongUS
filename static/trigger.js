@@ -12,8 +12,11 @@ console.log("trigger.js loaded");
 // var query = window.location.search.substring(1);
 var query_show;
 
-// var register = document.getElementById("register");
-// var draw = document.getElementById("draw");
+var register_btn = document.getElementById("register");
+var draw_btn = document.getElementById("draw");
+
+register_btn.addEventListener("click", register_game);
+draw_btn.addEventListener("click", draw);
 // var show = document.getElementById("show");
 
 // register.addEventListener("click", register_game);
