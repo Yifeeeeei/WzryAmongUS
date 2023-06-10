@@ -6,6 +6,8 @@
 // var hero = document.getElementById("hero");
 // var all_players = document.getElementsByClassName("all_players");
 
+var global_game_number;
+
 // var base_url = "https://wzryamongus.yifeeeeei.repl.co/";
 console.log("trigger.js loaded");
 
@@ -45,6 +47,7 @@ function register_game() {
 
     console.log("registering");
     var game_number_val = game_number.value;
+    global_game_number = parseInt(game_number_val);
     var httpRequest = new XMLHttpRequest(); //第一步：建立所需的对象
     httpRequest.open(
         "GET",
@@ -82,7 +85,7 @@ function draw() {
     var base_url = "https://wzryamongus.yifeeeeei.repl.co/";
 
     console.log("drawing");
-    var game_number_val = parseInt(game_number.value);
+    var game_number_val = global_game_number;
     var player_number_val = parseInt(player_number.innerText);
 
     if (isNaN(player_number_val)) {
@@ -129,7 +132,7 @@ function show() {
     var base_url = "https://wzryamongus.yifeeeeei.repl.co/";
 
     console.log("showing");
-    var game_number_val = parseInt(game_number.value);
+    var game_number_val = global_game_number;
     var player_number_val = parseInt(player_number.innerText);
     var httpRequest = new XMLHttpRequest(); //第一步：建立所需的对象
     httpRequest.open(
