@@ -125,19 +125,15 @@ def register():
     return_dic = {"status": "success", "game_number": 0, "player_number": 0}
     game_number = int(request.args.get("game_number"))
     user_id = str(request.args.get("user_id"))
-    print(user_id, " entered!")
     if user_id == "" or int(user_id) >= len(registration_table):
-        print("no such user, creating new user ")
         # create_new_user_id
         user_id = str(len(registration_table))
-        print("no such user, creating new user ", user_id)
         re = RegistrationEntry()
         registration_table.append(re)
         return_dic["user_id"] = user_id
     else:
         # if it matches
         if registration_table[int(user_id)].game_number == game_number:
-            print("game number matches ", user_id, game_number)
             return_dic["game_number"] = game_number
 
             pn = registration_table[int(user_id)].player_number
@@ -150,12 +146,6 @@ def register():
             return_dic["player_number"] = pn
             return_dic["user_id"] = user_id
             return return_dic
-        else:
-            print(
-                "game number does not match ",
-                registration_table[int(user_id)].game_number,
-                game_number,
-            )
 
     player_number = 0
     for i in range(len(game_list)):
