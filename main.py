@@ -141,7 +141,7 @@ def register():
             return_dic["game_number"] = game_number
 
             pn = registration_table[int(user_id)].player_number
-            if pn == -2:
+            if pn == -2 or pn == -1:
                 return_dic["status"] = "failed"
                 return_dic["player_number"] = pn
                 return_dic["user_id"] = user_id
@@ -167,6 +167,8 @@ def register():
                 return_dic["status"] = "failed"
             return_dic["player_number"] = player_number
             return_dic["user_id"] = user_id
+            registration_table[int(user_id)].game_number = game_number
+            registration_table[int(user_id)].player_number = player_number
 
             return json.dumps(return_dic)
     print("new one")
