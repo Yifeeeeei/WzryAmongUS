@@ -13,6 +13,15 @@ import parse_all_heros
 
 hero_data = parse_all_heros.get_hero_data()
 
+registration_table = []
+
+
+class RegistrationEntry:
+    def __init__(self):
+        self.game_number = -2
+        self.player_number = -2
+
+
 # hero_data = joblib.load("hero_data.pkl")
 
 
@@ -115,6 +124,29 @@ def wzry():
 def register():
     return_dic = {"status": "success", "game_number": 0, "player_number": 0}
     game_number = int(request.args.get("game_number"))
+    user_id = str(request.args.get("user_id"))
+    if user_id == "" or int(user_id) >= len(registration_table):
+        # create_new_user_id
+        user_id = str(len(registration_table))
+        re = RegistrationEntry()
+        registration_table.append(re)
+        return_dic["user_id"] = user_id
+    else:
+        # if it matches
+        if registration_table[int(user_id)].game_number == game_number:
+            return_dic["game_number"] = game_number
+
+            pn = registration_table[int(user_id)].player_number
+            if pn == -2:
+                return_dic["status"] = "failed"
+                return_dic["player_number"] = pn
+                return_dic["user_id"] = user_id
+                return return_dic
+
+            return_dic["player_number"] = pn
+            return_dic["user_id"] = user_id
+            return return_dic
+
     player_number = 0
     for i in range(len(game_list)):
         if game_list[i].game_number == game_number:
@@ -124,6 +156,8 @@ def register():
             if player_number == -1:
                 return_dic["status"] = "failed"
             return_dic["player_number"] = player_number
+            return_dic["user_id"] = user_id
+
             return json.dumps(return_dic)
     print("new one")
     new_game = Game(game_number)
@@ -132,6 +166,10 @@ def register():
     return_dic["status"] = "success"
     return_dic["game_number"] = game_number
     return_dic["player_number"] = player_number
+    return_dic["user_id"] = user_id
+
+    registration_table[int(user_id)].game_number = game_number
+    registration_table[int(user_id)].player_number = player_number
     return json.dumps(return_dic)
 
 

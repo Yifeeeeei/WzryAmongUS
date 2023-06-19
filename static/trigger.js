@@ -34,6 +34,23 @@ function get_request_url(url, datas) {
     return new_url.slice(0, -1);
 }
 
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+    var expires = "expires=" + d.toGMTString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(";");
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i].trim();
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
+}
+
 function register_game() {
     var game_number = document.getElementById("game_number");
     var player_number = document.getElementById("player_number");
@@ -48,10 +65,16 @@ function register_game() {
     console.log("registering");
     var game_number_val = game_number.value;
     global_game_number = parseInt(game_number_val);
+
+    var user_id = getCookie("user_id");
+
     var httpRequest = new XMLHttpRequest(); //第一步：建立所需的对象
     httpRequest.open(
         "GET",
-        get_request_url("/register", { game_number: game_number_val }),
+        get_request_url("/register", {
+            game_number: game_number_val,
+            user_id: user_id,
+        }),
         true
     ); //第二步：打开连接  将请求参数写在url中  ps:"http://localhost:8080/rest/xxx"
     httpRequest.send(); //第三步：发送请求  将请求参数写在URL中
@@ -63,6 +86,7 @@ function register_game() {
             var json = httpRequest.responseText; //获取到json字符串，还需解析
             // console.log(json);
             var obj = JSON.parse(json);
+            setCookie("user_id", obj["user_id"], 1);
             if (obj["status"] == "success") {
                 player_number.innerText = obj["player_number"];
                 query_show = self.setInterval("show()", 1000);
