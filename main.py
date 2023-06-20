@@ -70,6 +70,7 @@ class Game:
 class RegistrationTable:
     def __init__(self):
         self.table = dict()
+        self.operate_time_table = dict()
 
     def invalid_user_id(self, user_id):
         if user_id < 0:
@@ -95,8 +96,12 @@ class RegistrationTable:
         else:
             return False
 
+    def update_time(self, user_id):
+        self.operate_time_table[user_id] = time.time()
+
     def get(self, user_id):
         if user_id in self.table.keys():
+            self.update_time(user_id)
             return self.table[user_id]
         else:
             return None
@@ -132,7 +137,6 @@ class GameList:
         return True
 
     def draw(self, game_number):
-
         for i in range(len(self.game_list)):
             if self.game_list[i].game_number == game_number:
                 self.game_list[i].draw()
@@ -147,12 +151,22 @@ class GameList:
                 break
         return len(self.game_list[i].player_list)
 
+    def clear_all_except(self, game_numbers):
+        index_list = []
+        for i in range(len(self.game_list)):
+            if self.game_list[i].game_number not in game_numbers:
+                index_list.append(i)
+        index_list.reverse()
+        for index in index_list:
+            self.game_list.pop(index)
+
 
 app = Flask(__name__)
 app.config["SCHEDULER_API_ENABLED"] = True
 
-# scheduler = APScheduler()
-# scheduler.init_app(app)
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
 
 
 hero_data = parse_all_heros.get_hero_data()
@@ -288,6 +302,18 @@ def show():
                 }
             )
     return json.dumps(return_dict)
+
+
+@scheduler.task("cron", id="remove inactive game", hour="2")
+def remove_inactive_game():
+    keep_room_numbers = []
+    for ui in registration_table.operate_time_table.keys():
+        if (
+            time.time() - registration_table.operate_time_table[ui] < 60 * 60 * 6
+        ):  # 6hours
+            keep_room_numbers.append(registration_table.get(ui))
+
+    game_list.clear_all_except(keep_room_numbers)
 
 
 app.run(host="0.0.0.0", port=80, debug=True)
