@@ -260,17 +260,17 @@ function show() {
                         var vote_div = document.querySelector(
                             "#vote" + i.toString() + " > div"
                         );
-                        console.log(
-                            "#vote" + i.toString() + " > div",
-                            vote_div
-                        );
+                        // console.log(
+                        //     "#vote" + i.toString() + " > div",
+                        //     vote_div
+                        // );
 
                         // you can't choose yourself
                         if (all_players[i].classList.contains("chosen")) {
                             vote_div.setAttribute("hidden", "");
                         } else {
                             if (vote_div.hasAttribute("hidden")) {
-                                console.log("remove hidden", i);
+                                // console.log("remove hidden", i);
                                 vote_div.removeAttribute("hidden");
                             }
                         }
