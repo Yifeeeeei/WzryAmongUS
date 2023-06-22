@@ -305,7 +305,7 @@ def draw():
 
 """
 in: 'user_id':int
-out: 'status': 'success' or 'failed' or 'expired'
+out: 'status': 'success' or 'failed' or 'expired' or 'finished'
     'people_in_game': int
     if success:
         'identity': str,
@@ -313,6 +313,7 @@ out: 'status': 'success' or 'failed' or 'expired'
             "player_number": int,
             "hero": str,
             "road": str
+            if status == finished: "identity": str
         'update_time': int
         'votes': list of list [[guys who voted for this guy]]
         'draw_time': int
@@ -341,6 +342,12 @@ def show():
     return_dict["update_time"] = game_list.get_update_time(game_number)
     return_dict["people_in_game"] = len(player_list)
     return_dict["votes"] = game_list.get_vote_list(game_number)
+    total_votes = 0
+    for vote_list in return_dict["votes"]:
+        total_votes += len(vote_list)
+    if total_votes == 5:
+        return_dict["status"] = "finished"
+
     return_dict["draw_time"] = int(game_list.get_draw_time(game_number))
     for player in player_list:
         if player.number == user_id:
@@ -352,6 +359,8 @@ def show():
                     "road": player.road,
                 }
             )
+            if total_votes == 5:
+                return_dict["players"][-1]["identity"] = player.identity
         else:
             return_dict["players"].append(
                 {
@@ -360,6 +369,8 @@ def show():
                     "road": player.road,
                 }
             )
+            if total_votes == 5:
+                return_dict["players"][-1]["identity"] = player.identity
     return json.dumps(return_dict)
 
 

@@ -199,7 +199,10 @@ function show() {
                 alert("This room is expired");
                 clearInterval(query_show);
                 return;
-            } else if (obj["status"] == "success") {
+            } else if (
+                obj["status"] == "success" ||
+                obj["status"] == "finished"
+            ) {
                 var new_update_time = parseInt(obj["update_time"]);
                 if (new_update_time == latest_update_time) {
                     // don't need to change anything
@@ -231,9 +234,14 @@ function show() {
                         all_players[i].getElementsByClassName(
                             "all_road"
                         )[0].innerText = obj["players"][i]["road"];
+                        if (obj["status"] == "finished") {
+                            all_players[i].getElementsByClassName(
+                                "identity"
+                            )[0].innerText = obj["players"][i]["identity"];
+                        }
                     }
 
-                    // clear votes
+                    // clear votes and identities
 
                     if (global_draw_time != parseInt(obj["draw_time"])) {
                         var n_inputs =
@@ -244,6 +252,12 @@ function show() {
                             }
                         }
                         global_draw_time = parseInt(obj["draw_time"]);
+
+                        var n_identities =
+                            document.querySelectorAll(".identity");
+                        for (var i = 0; i < n_identities.length; i++) {
+                            n_identities[i].innerText = "";
+                        }
                     }
 
                     // check vote stuff
