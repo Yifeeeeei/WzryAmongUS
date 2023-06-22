@@ -29,9 +29,30 @@ class Game:
         self.ready = False
         self.all_roads = ["上路", "中路", "下路", "打野", "游走"]
         self.all_identities = ["良民", "良民", "良民", "呆呆鸟", "卧底"]
+        self.votes = {}
+        self.last_draw_time = time.time()
+
+    def update_draw_time(self):
+        self.last_draw_time = time.time()
+
+    def vote(self, user_id, vote_for_num):
+        # user_id x voted for vote_for_num
+        self.votes[user_id] = vote_for_num
 
     def update_time(self):
         self.last_operate_time = time.time()
+
+    def get_vote_list(self):
+        # return a list of lists [[player at number voted for this one]]
+        rt_list = [[] for i in range(5)]
+        mappings = {}
+        for i in range(len(self.player_list)):
+            mappings[self.player_list[i].number] = i
+
+        for k in self.votes.keys():
+            if self.votes[k] != -1:
+                rt_list[self.votes[k]].append(mappings[k])
+        return rt_list
 
     def add_player(self, user_id):
         self.update_time()
@@ -43,9 +64,15 @@ class Game:
 
     def draw(self):
         self.update_time()
+        self.update_draw_time()
         if len(self.player_list) != 5:
             self.ready = False
         else:
+            # init votes
+            self.votes = {}
+            for player in self.player_list:
+                self.votes[player.number] = -1
+            # start drawing
             random.shuffle(self.all_roads)
             random.shuffle(self.all_identities)
             chosen_heros = []
@@ -120,6 +147,12 @@ class GameList:
                 return True
         return False
 
+    def get_draw_time(self, game_number):
+        for i in range(len(self.game_list)):
+            if self.game_list[i].game_number == game_number:
+                return self.game_list[i].last_draw_time
+        return -1
+
     def fit_into_room(self, user_id, game_number):
         for i in range(len(self.game_list)):
             if self.game_list[i].game_number == game_number:
@@ -150,6 +183,26 @@ class GameList:
                     return self.game_list[i].player_list
                 break
         return len(self.game_list[i].player_list)
+
+    def get_update_time(self, game_number):
+        for i in range(len(self.game_list)):
+            if self.game_list[i].game_number == game_number:
+                return self.game_list[i].last_operate_time
+        return 0
+
+    def get_vote_list(self, game_number):
+        for i in range(len(self.game_list)):
+            if self.game_list[i].game_number == game_number:
+                return self.game_list[i].get_vote_list()
+        return [[] for i in range(5)]
+
+    def vote(self, user_id, game_number, vote_for):
+        for i in range(len(self.game_list)):
+            if self.game_list[i].game_number == game_number:
+                self.game_list[i].vote(user_id, vote_for)
+                self.game_list[i].update_time()
+                return True
+        return False
 
     def clear_all_except(self, game_numbers):
         index_list = []
@@ -260,6 +313,9 @@ out: 'status': 'success' or 'failed' or 'expired'
             "player_number": int,
             "hero": str,
             "road": str
+        'update_time': int
+        'votes': list of list [[guys who voted for this guy]]
+        'draw_time': int
 
 """
 
@@ -282,7 +338,10 @@ def show():
     return_dict = dict()
     return_dict["status"] = "success"
     return_dict["players"] = []
+    return_dict["update_time"] = game_list.get_update_time(game_number)
     return_dict["people_in_game"] = len(player_list)
+    return_dict["votes"] = game_list.get_vote_list(game_number)
+    return_dict["draw_time"] = int(game_list.get_draw_time(game_number))
     for player in player_list:
         if player.number == user_id:
             return_dict["identity"] = player.identity
@@ -302,6 +361,29 @@ def show():
                 }
             )
     return json.dumps(return_dict)
+
+
+"""
+in: 'user_id':int, 'vote_for':int [0,4]
+out: 'status': 'success' or 'failed'
+
+"""
+
+
+@app.route("/vote")
+def vote():
+    user_id = int(request.args.get("user_id"))
+    vote_for = int(request.args.get("vote_for"))
+    game_number = registration_table.get(user_id)
+    vote_result = game_list.vote(user_id, game_number, vote_for)
+    if not vote_result:
+        return_dict = dict()
+        return_dict["status"] = "failed"
+        return return_dict
+    else:
+        return_dict = dict()
+        return_dict["status"] = "success"
+        return return_dict
 
 
 @scheduler.task("cron", id="remove inactive game", hour="2")
