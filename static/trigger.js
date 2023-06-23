@@ -105,6 +105,7 @@ function register_game() {
                 return;
             } else if (obj["status" == "expired"]) {
                 set_user_id(parseInt(obj["user_id"]));
+                clearInterval(query_show);
                 alert("This room is expired");
                 return;
             } else if (obj["status"] == "success") {
@@ -195,8 +196,9 @@ function show() {
 
                 return;
             } else if (obj["status"] == "expired") {
-                alert("This room is expired");
                 clearInterval(query_show);
+                alert("This room is expired");
+
                 return;
             } else if (
                 obj["status"] == "success" ||
