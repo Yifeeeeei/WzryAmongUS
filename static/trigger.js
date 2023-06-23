@@ -1,5 +1,5 @@
 console.log("trigger.js loaded");
-// choose whether to use tmp cookie or real cookie
+// choose whether to use tmp cookie or real cookie, change DEBUGGING to false when deployment
 DEBUGGING = false;
 
 var register_btn = document.getElementById("register");
@@ -271,9 +271,8 @@ function show() {
                             "vote_result"
                         )[0].innerText = vote_str;
 
-                        var vote_div = document.querySelector(
-                            "#vote" + i.toString() + " > div"
-                        );
+                        var vote_div =
+                            document.querySelectorAll(".vote_container")[i];
                         // console.log(
                         //     "#vote" + i.toString() + " > div",
                         //     vote_div

@@ -2,7 +2,7 @@ div.all_players.chosen {
     color: #090909;
     padding: 0.7em 1.7em;
     font-size: 1rem;
-    font-weight: bold;
+    font-weight: bolder;
     border-radius: 0.5em;
     background: #e8e8e8;
     border: 1px solid red;
@@ -59,7 +59,7 @@ body {
 }
 p {
     font-size: 1rem;
-    font-weight: 500;
+    /* font-weight: 500; */
     color: #000000;
     text-align: center;
     margin: 1rem;
