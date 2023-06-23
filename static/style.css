@@ -1,13 +1,18 @@
-.chosen {
+div.all_players.chosen {
     color: #090909;
     padding: 0.7em 1.7em;
     font-size: 1rem;
+    font-weight: bold;
     border-radius: 0.5em;
     background: #e8e8e8;
-    border: 1px solid #e8e8e8;
+    border: 1px solid red;
     transition: all 0.3s;
     box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
 }
+
+/* label {
+    display: inline-block;
+} */
 
 #top3 {
     display: flex;
@@ -61,14 +66,15 @@ p {
     padding: 0;
 }
 
-div {
+div.all_players {
     font-size: 1rem;
     font-weight: 500;
     color: #000000;
     text-align: center;
     margin: 0;
     padding: 0;
-    border-bottom: 1px solid #c5c5c5;
+    /* border-bottom: 1px solid #c5c5c5; */
+    border-top: 1px solid #c5c5c5;
 }
 
 /* votes */
@@ -90,6 +96,13 @@ div {
 }
 
 /* Create a custom checkbox */
+
+.container {
+    text-align: center;
+    height: 1.5em;
+    width: 1.5em;
+}
+
 .checkmark {
     position: relative;
     top: 0;

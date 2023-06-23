@@ -147,10 +147,9 @@ function vote() {
     console.log("voted");
 
     var vote_for = -1;
-    var votes_lables = document.getElementsByClassName("votes"); // should be five
-    for (var i = 0; i < votes_lables.length; i++) {
-        var input_vote = votes_lables[i].getElementsByTagName("input")[0];
-        if (input_vote.checked) {
+    var vote_inputs = document.querySelectorAll(".votes > input[type=radio]");
+    for (var i = 0; i < vote_inputs.length; i++) {
+        if (vote_inputs[i].checked) {
             vote_for = i;
             break;
         }
@@ -268,8 +267,9 @@ function show() {
                             vote_str +=
                                 obj["players"][votes[i][j]]["hero"] + " ";
                         }
-                        vote_lables[i].getElementsByTagName("p")[0].innerText =
-                            vote_str;
+                        all_players[i].getElementsByClassName(
+                            "vote_result"
+                        )[0].innerText = vote_str;
 
                         var vote_div = document.querySelector(
                             "#vote" + i.toString() + " > div"
