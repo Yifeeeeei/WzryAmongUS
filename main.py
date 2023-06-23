@@ -402,7 +402,7 @@ def remove_inactive_game():
     keep_room_numbers = []
     for ui in registration_table.operate_time_table.keys():
         if (
-            time.time() - registration_table.operate_time_table[ui] < 60 * 60 * 6
+            time.time() - registration_table.operate_time_table[ui] > 60 * 60 * 6
         ):  # 6hours
             keep_room_numbers.append(registration_table.get(ui))
 
