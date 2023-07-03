@@ -1,6 +1,6 @@
 console.log("trigger.js loaded");
 // choose whether to use tmp cookie or real cookie, change DEBUGGING to false when deployment
-DEBUGGING = false;
+DEBUGGING = true;
 
 var register_btn = document.getElementById("register");
 var draw_btn = document.getElementById("draw");

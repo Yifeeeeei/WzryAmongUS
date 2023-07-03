@@ -5,7 +5,7 @@ import time
 
 import parse_all_heros
 
-from freshBox import FreshBox
+from freshBox import FreshList, FreshDict
 
 
 class Player:
@@ -91,8 +91,8 @@ class Game:
 
 
 class RegistrationTable:
-    def __init__(self):
-        self.table = dict()
+    def __init__(self, box_size):
+        self.table = FreshDict(box_size=box_size)
         self.operate_time_table = dict()
 
     def invalid_user_id(self, user_id):
@@ -132,7 +132,7 @@ class RegistrationTable:
 
 class GameList:
     def __init__(self, box_size):
-        self.game_list = FreshBox(box_size=box_size)
+        self.game_list = FreshList(box_size=box_size)
 
     def add_game(self, new_game: Game):
         self.game_list.append(new_game)
@@ -213,8 +213,10 @@ class GameList:
 app = Flask(__name__)
 
 hero_data = parse_all_heros.get_hero_data()
-registration_table = RegistrationTable()
-game_list = GameList(box_size=10)
+
+MAX_GAME_NUMBER = 10
+registration_table = RegistrationTable(box_size=5 * MAX_GAME_NUMBER)
+game_list = GameList(box_size=MAX_GAME_NUMBER)
 
 
 @app.route("/")
