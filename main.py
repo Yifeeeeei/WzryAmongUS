@@ -1,15 +1,11 @@
 from flask import Flask, render_template, request
-import joblib
 import random
 import json
-
-from flask_apscheduler import APScheduler
 import time
 
-# try:
-#     hero_data = joblib.load("hero_data.pkl")
-# except:
 import parse_all_heros
+
+from freshBox import FreshBox
 
 
 class Player:
@@ -135,8 +131,8 @@ class RegistrationTable:
 
 
 class GameList:
-    def __init__(self):
-        self.game_list = []
+    def __init__(self, box_size):
+        self.game_list = FreshBox(box_size=box_size)
 
     def add_game(self, new_game: Game):
         self.game_list.append(new_game)
@@ -215,16 +211,10 @@ class GameList:
 
 
 app = Flask(__name__)
-app.config["SCHEDULER_API_ENABLED"] = True
-
-# scheduler = APScheduler()
-# scheduler.init_app(app)
-# scheduler.start()
-
 
 hero_data = parse_all_heros.get_hero_data()
 registration_table = RegistrationTable()
-game_list = GameList()
+game_list = GameList(box_size=10)
 
 
 @app.route("/")
@@ -395,18 +385,6 @@ def vote():
         return_dict = dict()
         return_dict["status"] = "success"
         return return_dict
-
-
-# @scheduler.task("cron", id="remove inactive game", hour="2")
-# def remove_inactive_game():
-#     keep_room_numbers = []
-#     for ui in registration_table.operate_time_table.keys():
-#         if (
-#             time.time() - registration_table.operate_time_table[ui] > 60 * 60 * 6
-#         ):  # 6hours
-#             keep_room_numbers.append(registration_table.get(ui))
-
-#     game_list.clear_all_except(keep_room_numbers)
 
 
 app.run(host="0.0.0.0", port=80, debug=True)
